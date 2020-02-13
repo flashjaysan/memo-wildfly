@@ -13,12 +13,14 @@
   - La communication : RMI-IIOP, JMS, Java mail.
 - Un EJB (ou Entreprise Java Bean) est une classe qui décrit ce qu'elle peut faire.
 - Un EJB de session est une interface qui présente des services qui peuvent être consommés localement (avec l'annotation `@Local`) ou à distance (avec l'annotation `@Remote`). Les services sont sans état (avec l'annotation @Stateless) ou avec sauvegarde de l'état (avec l'annotation @Statefull).
-- L'annotation `@Local` indique que le service est appelé depuis la même instance de JVM.
-- L'annotation `@Remote` indique que le service est appelé en dehors de la JVM. C'est ce qui est exposé à l'extérieur du système. Le consommateur du service doit avoir confiance envers le service.
-- L'annotation `@Stateless` est la plus utilisée car elle est moins couteuses sur la machine. Le service est partagé par tous les consommateurs.
-- L'annotation `@Statefull` stocke toutes les informations en mémoire. Il y a une notion de permanence.
+- L'annotation `@Local` indique que le service est appelé depuis la même instance de JVM. Elle se met sur la classe ou l'interface de l'implémentation du service.
+- L'annotation `@Remote` indique que le service est appelé en dehors de la JVM.  Elle se met sur la classe ou l'interface de l'implémentation du service. C'est ce qui est exposé à l'extérieur du système. Le consommateur du service doit avoir confiance envers le service.
+- L'annotation `@Stateless` est la plus utilisée car elle est moins couteuses sur la machine. Le service est partagé par tous les consommateurs. Elle se met sur la classe ou l'interface qui expose le service.
+- L'annotation `@Statefull` stocke toutes les informations en mémoire. Il y a une notion de permanence. Elle se met sur la classe ou l'interface qui expose le service.
+- Une classe peut à la fois porter l'annotation `@Stateless` ou `@Statefull` et l'annotation `@Local` ou `@Remote`.
+- L'annotation `@EJB` se met sur un membre d'une classe service. Cela indique au serveur d'application de générer automatiquement une instance. Inutile de l'instancier manuellement avec `new`.
 - DTO (ou Data Transfer Object) est également appelé POJO (ou Plain Old Java Object). C'est une classe utilisée pour le transfert d'objet.
-- Un Manager est une classe qui manipule les données.
+- Un Manager est une classe qui manipule les données. Il doit être mis en local.
 
 **Conseils :**
 
@@ -129,9 +131,33 @@ Le projet apparait dans le panneau `Project Explorer`.
 
 - Faites un clic droit sur le projet et choisissez l'option `Run As -> Maven build...`.
 - Dans le champ `Goals`, saisissez `clean install` puis cliquez sur `Run`.
+- Vous pouvez désormais utiliser cet archétype en tant que squelette de base de votre projet Java EE.
+
+## Créer un projet de base avec Eclipse
+
+Vous pouvez créer un squelette de base pour votre projet Java EE directement depuis Eclipse.
+
+- Cliquez sur le menu `File -> New -> Other...`.
+- Sélectionnez l'option `Maven -> Maven Project` puis cliquez sur `Next`.
+- Laissez les options par défaut et cliquez sur `Next`.
+- Dans le champ `Filter` saisissez `wildfly`.
+- Dans la colonne `ArtifactId` sélectionnez `wildfly-jakartaee-ear-archetype` et de version `18.0.0.Final` puis cliquez sur `Next`.
+- Dans le champ `GroupId`, saisissez le nom du package de votre projet.
+- Dans le champ `ArtifactId`, saisissez le nom de votre projet.
+- Cliquez sur le bouton `Finish`.
+- Quatre nouveaux projets apparaissent dans le panneau `Project Explorer`. Les projets `-ear`, `-ejb` et `-web` sont des projets virtuels qui font référence au projet principal (le projet sans extension). Ces projets contiennent chacun un fichier `pom.xml` qui hérite du fichier `pom.xml` du projet général.
+
+**Remarque :** Si `wildfly-jakartaee-ear-archetype` n'apparait pas dans la liste, suivez la procédure suivante :
+- Cliquez sur le bouton `Add archetype`.
+- Dans le champ `GroupId`, saisissez `org.wildfly.archetype`.
+- Dans le champ `ArtifactId`, saisissez `wildfly-jakartaee-ear-archetype`.
+- Dans le champ `Archetype Version`, saisissez `18.0.0.Final`.
+- cliquez sur `Next`.
 
 ## Déployer un projet sur Wildfly
 
+- Dans l'onglet `Servers` de la perspective `JBoss`, faites un clic droit sur le serveur et sélectionnez `Add and Remove...`.
+- Sléectionnez le projet `-ear` à gauche que vous souhaitez ajouter au serveur et cliquez sur le bouton `Add` pour le faire passer à droite. Cliquez ensuite sur le bouton `Finish`.
+- Dans le dossier `standalone` où vous avez décompressé Wildfly, le projet doit apparaitre.
 
-
-
+**Attention !** Lorsque vous faites une modification du projet à déployer, vous devez à nouveau le déployer sur le serveur.
