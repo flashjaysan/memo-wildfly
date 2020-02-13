@@ -160,4 +160,4 @@ Vous pouvez créer un squelette de base pour votre projet Java EE directement de
 - Sléectionnez le projet `-ear` à gauche que vous souhaitez ajouter au serveur et cliquez sur le bouton `Add` pour le faire passer à droite. Cliquez ensuite sur le bouton `Finish`.
 - Dans le dossier `standalone` où vous avez décompressé Wildfly, le projet doit apparaitre.
 
-**Attention !** Lorsque vous faites une modification du projet à déployer, vous devez à nouveau le déployer sur le serveur.
+**Attention !** Lorsque vous faites une modification du projet à déployer, vous devez à nouveau le déployer sur le serveur. Dans le panneau `Servers`, dépliez le serveur et faites un clic droit sur le projet déployé dans la liste. Choisissez l'option `Full Publish`.
