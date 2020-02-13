@@ -64,6 +64,7 @@ Pour JBOSS, pour le démarrage, on peut être en mode *domain* ou en mode *stand
 - Démarrez Wildfly.
 - Utilisez votre navigateur pour vous rendre à l'adresse `localhost:9990/console`.
 - Saisissez l'identifiant et le mot de passe du compte administrateur puis validez.
+- Vous êtes désormais connecté à Wildfly. La section `Deployments` indique quels projets sont déployés dans Wildfly.
 
 ## Installer le plugin Wildfly dans Eclipse
 
@@ -95,6 +96,39 @@ Pour JBOSS, pour le démarrage, on peut être en mode *domain* ou en mode *stand
 
 - Dans l'onglet `Servers` de la perspective `JBoss`, faites un clic droit sur le serveur Wildfly et sélectionnez `Start` ou cliquez sur le bouton en forme de flèche verte dans la fenêtre.
 - Pour stopper le serveur, faites un clic droit sur le serveur et sélectionnez `Stop` ou cliquez sur le bouton en forme de carré rouge dans la fenêtre.
+
+## Télécharger un modèle de projet vide pour Wildfly
+
+Parfois vous ne pourrez pas générer automatique de projet Wildfly. Vous pouvez télécharger un modèle tout prêt sur Internet. Un modèle de projet Wildfly est appelé un archétype.
+
+- Allez à l'adresse suivante : [https://github.com/wildfly/wildfly-archetypes/](https://github.com/wildfly/wildfly-archetypes/).
+- Dans la page, cliquez sur le menu déroulant `Branch: master`. Cliquez sur l'onglet `Tags` puis sélectionnez `18.0.0.Final`.
+- Cliquez sur le bouton `Clone or download` et copiez l'[URI fournie](https://github.com/wildfly/wildfly-archetypes.git).
+
+## Importer l'archétype de projet Wildfly dans Eclipse 
+
+- Dans Eclipse, cliquez sur le menu `File -> Import...`.
+- Sélectionnez l'option `Git -> Projects from Git` puis cliquez sur `Next`.
+- Sélectionnez l'option `Clone URI` puis cliquez sur `Next`.
+- Dans le champ `URI`, collez l'URI récupéré dans la section précédente puis cliquez sur `Next`.
+- Laissez les options par défaut et cliquez sur `Next`.
+- Dans le champ `Directory`, sélectionnez un emplacement vide puis cliquez sur `Next`.
+- A la fin du téléchargement du projet, vérifiez que le sélecteur `Import as general project` est sélectionné puis cliquez sur `Next`.
+- Dans le champ `Project name`, définissez un nom de projet puis cliquez sur `Finish`.
+
+Le projet apparait dans le panneau `Project Explorer`.
+
+## Définir la version de Wildfly et la nature du projet
+
+- Faites un clic droit sur le projet et choisissez l'option `Team -> Switch To -> Other...`.
+- Sélectionnez l'option `Tags -> 18.0.0.Final` puis cliquez sur le bouton `Check Out`.
+- Cliquez sur le bouton `Close`.
+- Faites un clic droit sur le projet et choisissez l'option `Configure -> Convert to Maven Project`.
+
+## Tester l'archétype
+
+- Faites un clic droit sur le projet et choisissez l'option `Run As -> Maven build...`.
+- Dans le champ `Goals`, saisissez `clean install` puis cliquez sur `Run`.
 
 ## Déployer un projet sur Wildfly
 
