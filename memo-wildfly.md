@@ -184,6 +184,141 @@ Vous pouvez créer un squelette de base pour votre projet Java EE directement de
 
 **Attention !** Lorsque vous faites une modification du projet à déployer, vous devez à nouveau le déployer sur le serveur. Dans le panneau `Servers`, dépliez le serveur et faites un clic droit sur le projet déployé dans la liste. Choisissez l'option `Full Publish`.
 
+## Services, EJB de session et DTO
+
+### Créer deux packages pour séparer les accès
+
+Dans le dossier `src/main/java`, créez un package `pub` (le mot clé `public` étant déjà réservé) où vous placerez vos interfaces accessibles de l'extérieur (en *remote*).
+
+Créez également un package `internal` (le mot clé `private` étant déjà réservé) où vous placerez vos classes et interfaces dont vous souhaitez limiter l'accès à la même instance de JVM (en *local*).
+
+### Exposer un service de type `Remote`
+
+Dans le package `pub`, créez une interface `ServiceRemote` avec l'annotation `@Remote` et ajoutez-lui une méthode abstraite publique.
+
+```java
+import javax.ejb.Remote;
+
+@Remote
+public interface ServiceRemote {
+	
+	public String ping();
+
+}
+```
+
+Dans le package `internal`, créez une classe `Service` avec l'annotation `@Stateless` qui implémente l'interface `ServiceRemote` et implémentez les méthodes de cette interface.
+
+```java
+import javax.ejb.Stateless;
+import monpackage.pub.ServiceRemote;
+
+@Stateless
+public class Service implements ServiceRemote {
+
+	@Override
+	public String ping() {
+		return "pong";
+	}
+	
+}
+```
+
+### Tester le service de type `Remote`
+
+Dans le dossier `src/test/java`, créez une classe de test qui appelle la méthode de l'interface `Service`.
+
+```java
+import monpackage.pub.ServiceRemote;
+
+public class PingTester {
+	
+	@Test
+	public void testPing() {
+		ServiceRemote service = new Service();
+		assertEquals("pong", service.ping());
+	}
+
+}
+```
+
+### Exposer un service de type `Local`
+
+Dans l'interface `ServiceRemote` du package `pub`, ajoutez une nouvelle méthode abstraite publique.
+
+```java
+import javax.ejb.Remote;
+
+@Remote
+public interface ServiceRemote {
+	
+	public String ping();
+  public String hello();
+
+}
+```
+
+Dans le package `internal`, créez une nouvelle classe `ServiceLocal` avec les annotation `@Stateless` et `@Local`. Ajoutez-lui une méthode
+qui renvoie un objet du type de la méthode que vous avez ajoutée à l'étape précédente.
+
+```java
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+
+@Local
+@Stateless
+public class ServiceLocal {
+	
+	public String greeting() {
+		return "hello";
+	}
+
+}
+```
+
+Dans la classe `Service` du package `internal`, créez un membre privé de type `ServiceLocal` avec l'annotation `@EJB` puis implémentez la méthode manquante de l'interface `ServiceRemote` en appelant la méthode du membre `ServiceLocal`.
+
+```java
+import javax.ejb.Stateless;
+import monpackage.pub.ServiceRemote;
+
+@Stateless
+public class Service implements ServiceRemote {
+  
+	@EJB
+	private ServiceLocal serviceLocal;
+
+	@Override
+	public String ping() {
+		return "pong";
+	}
+
+  public String hello() {
+    return serviceLocal.greeting();
+  }
+	
+}
+```
+
+### Tester le service de type `Local`
+
+Dans le dossier `src/test/java`, dans la classe de test, accédez à la méthode précédente.
+
+```java
+import monpackage.pub.ServiceRemote;
+
+public class PingTester {
+	
+	@Test
+	public void testPing() {
+		ServiceRemote service = new Service();
+		assertEquals("pong", service.ping());
+    assertEquals("hello", service.hello());
+	}
+
+}
+```
+
 ## Java Persistence API (JPA)
 
 L'annotation `@Entity` sur une classe indique qu'elle doit être sauvegardée par le gestionnaire de sauvegarde de données (l'`EntityManager`).
